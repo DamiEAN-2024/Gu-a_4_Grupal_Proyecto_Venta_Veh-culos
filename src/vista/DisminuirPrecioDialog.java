@@ -3,6 +3,7 @@ package vista;
 import javax.swing.*;
 import controlador.Controlador;
 import java.awt.*;
+import java.text.DecimalFormat;
 
 public class DisminuirPrecioDialog extends JDialog {
 
@@ -40,7 +41,8 @@ public class DisminuirPrecioDialog extends JDialog {
         try {
             double valorMinimo = Double.parseDouble(txtValorMinimo.getText().trim());
             controlador.disminuirPrecioVehiculos(valorMinimo);
-            JOptionPane.showMessageDialog(this, "Se ha aplicado un 10% de descuento a los vehículos con un valor mayor a " + valorMinimo);
+            DecimalFormat formatoPrecio = new DecimalFormat("#,###");
+            JOptionPane.showMessageDialog(this, "Se ha aplicado un 10% de descuento a los vehículos con un valor mayor a " + formatoPrecio.format(valorMinimo));
             dispose(); // Cierra el diálogo
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "Ingrese un valor numérico válido.", "Error", JOptionPane.ERROR_MESSAGE);

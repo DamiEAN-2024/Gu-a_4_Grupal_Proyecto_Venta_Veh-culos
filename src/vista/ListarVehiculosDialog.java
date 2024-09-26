@@ -9,6 +9,7 @@ import modelo.Moto;
 import modelo.Vehiculo;
 import java.awt.*;
 import java.util.List;
+import java.text.DecimalFormat;
 
 public class ListarVehiculosDialog extends JDialog {
 
@@ -45,6 +46,7 @@ public class ListarVehiculosDialog extends JDialog {
         List<Vehiculo> listaVehiculos = controlador.obtenerTodosLosVehiculos();
 
         // Definir las columnas que tendrá la tabla
+        DecimalFormat formatoPrecio = new DecimalFormat("#,###");
         String[] columnas = {"Placa", "Marca", "Modelo", "Año", "Cilindrada", "Número de Ejes", "Valor", "Tipo"};
 
         // Crear la matriz de datos
@@ -57,7 +59,7 @@ public class ListarVehiculosDialog extends JDialog {
             datos[i][3] = vehiculo.getAnio();
             datos[i][4] = vehiculo.getCilindrada();
             datos[i][5] = vehiculo.getNumEjes();
-            datos[i][6] = vehiculo.getValor();
+            datos[i][6] = formatoPrecio.format(vehiculo.getValor()); // Formatear el valor del vehículo
             datos[i][7] = vehiculo instanceof Automovil ? "Automovil" :
                           vehiculo instanceof Bus ? "Bus" :
                           vehiculo instanceof Camion ? "Camion" : "Moto";

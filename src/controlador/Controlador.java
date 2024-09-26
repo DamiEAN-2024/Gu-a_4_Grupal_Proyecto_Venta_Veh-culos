@@ -3,6 +3,7 @@ package controlador;
 import java.util.List;
 import dao.VehiculoDAO;
 import modelo.Vehiculo;
+import java.text.DecimalFormat;
 
 public class Controlador {
 
@@ -30,7 +31,17 @@ public class Controlador {
     // Método para eliminar un vehículo (comprar)
     public boolean comprarVehiculo(String placa) {
         try {
-            return vehiculoDAO.eliminarVehiculo(placa);
+            // Obtener el tipo de vehículo usando el método de búsqueda por placa
+            Vehiculo vehiculo = vehiculoDAO.buscarVehiculoPorPlaca(placa);
+
+            if (vehiculo != null) {
+                String tipoVehiculo = vehiculo.getClass().getSimpleName().toLowerCase(); 
+                return vehiculoDAO.eliminarVehiculo(placa, tipoVehiculo);
+            } else {
+                System.out.println("No se encontró un vehículo con la placa: " + placa);
+                return false;
+            }
+
         } catch (Exception e) {
             System.err.println("Error al eliminar el vehículo: " + e.getMessage());
             return false;
@@ -69,7 +80,6 @@ public class Controlador {
     }
   
     public Vehiculo obtenerVehiculoMasAntiguo() {
-        System.out.println("Buscando el vehículo más antiguo utilizando la lista existente.");
         
         // Obtener la lista completa de vehículos
         List<Vehiculo> listaVehiculos = obtenerTodosLosVehiculos();

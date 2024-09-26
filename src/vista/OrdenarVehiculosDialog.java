@@ -5,6 +5,13 @@ import controlador.Controlador;
 import modelo.Vehiculo;
 import java.awt.*;
 import java.util.List;
+import java.text.DecimalFormat;
+import modelo.Automovil;
+import modelo.Bus;
+import modelo.Camion;
+import modelo.Moto;
+import modelo.Vehiculo;
+
 
 public class OrdenarVehiculosDialog extends JDialog {
 
@@ -56,13 +63,47 @@ public class OrdenarVehiculosDialog extends JDialog {
         List<Vehiculo> vehiculosOrdenados = controlador.ordenarVehiculos(criterio);
 
         if (vehiculosOrdenados != null && !vehiculosOrdenados.isEmpty()) {
-            StringBuilder resultado = new StringBuilder();
-            for (Vehiculo vehiculo : vehiculosOrdenados) {
-                resultado.append(vehiculo.toString()).append("\n");
+            // Definir las columnas para la tabla
+            String[] columnas = {"Placa", "Marca", "Modelo", "Año", "Cilindrada", "Número de Ejes", "Valor", "Tipo"};
+
+            // Crear la matriz de datos con la información de los vehículos
+            Object[][] datos = new Object[vehiculosOrdenados.size()][8];
+            DecimalFormat formatoPrecio = new DecimalFormat("#,###");
+            for (int i = 0; i < vehiculosOrdenados.size(); i++) {
+                Vehiculo vehiculo = vehiculosOrdenados.get(i);
+                datos[i][0] = vehiculo.getPlaca();
+                datos[i][1] = vehiculo.getMarca();
+                datos[i][2] = vehiculo.getModelo();
+                datos[i][3] = vehiculo.getAnio();
+                datos[i][4] = vehiculo.getCilindrada();
+                datos[i][5] = vehiculo.getNumEjes();
+                datos[i][6] = formatoPrecio.format(vehiculo.getValor());
+                datos[i][7] = vehiculo instanceof Automovil ? "Automovil" :
+                              vehiculo instanceof Bus ? "Bus" :
+                              vehiculo instanceof Camion ? "Camion" : "Moto";
             }
-            areaResultado.setText(resultado.toString());
+
+            // Crear la tabla
+            JTable tabla = new JTable(datos, columnas);
+            JScrollPane scrollPane = new JScrollPane(tabla);
+
+            // Crear un cuadro de diálogo para mostrar la tabla
+            JDialog dialogo = new JDialog(this, "Vehículos Ordenados", true);
+            dialogo.setSize(800, 400);
+            dialogo.setLocationRelativeTo(this);
+            dialogo.setLayout(new BorderLayout());
+
+            dialogo.add(scrollPane, BorderLayout.CENTER);
+
+            // Botón para cerrar el cuadro de diálogo
+            JButton btnCerrar = new JButton("Cerrar");
+            btnCerrar.addActionListener(ev -> dialogo.dispose());
+            dialogo.add(btnCerrar, BorderLayout.SOUTH);
+
+            dialogo.setVisible(true);
         } else {
-            areaResultado.setText("No se encontraron vehículos o hubo un problema al ordenar.");
+            JOptionPane.showMessageDialog(this, "No se encontraron vehículos o hubo un problema al ordenar.", "Resultado", JOptionPane.INFORMATION_MESSAGE);
         }
     }
+
 }

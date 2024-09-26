@@ -4,6 +4,7 @@ import javax.swing.*;
 import controlador.Controlador;
 import modelo.Vehiculo;
 import java.awt.*;
+import java.text.DecimalFormat;
 
 public class ConsultarVehiculoDialog extends JDialog {
     
@@ -51,7 +52,8 @@ public class ConsultarVehiculoDialog extends JDialog {
     }
 
     private void consultarVehiculo() {
-        String placa = txtPlaca.getText().trim();
+    	DecimalFormat formatoPrecio = new DecimalFormat("#,###");
+    	String placa = txtPlaca.getText().trim();
         if (!placa.isEmpty()) {
             Vehiculo vehiculo = controlador.obtenerInformacionVehiculo(placa);
             if (vehiculo != null) {
@@ -63,7 +65,7 @@ public class ConsultarVehiculoDialog extends JDialog {
                 detalleVehiculo.append("Año: ").append(vehiculo.getAnio()).append("\n");
                 detalleVehiculo.append("Número de Ejes: ").append(vehiculo.getNumEjes()).append("\n");
                 detalleVehiculo.append("Cilindrada: ").append(vehiculo.getCilindrada()).append("\n");
-                detalleVehiculo.append("Valor: ").append(vehiculo.getValor()).append("\n");
+                detalleVehiculo.append("Valor: ").append(formatoPrecio.format(vehiculo.getValor())).append("\n");
 
                 // Verificar el tipo específico de vehículo y agregar detalles adicionales
                 if (vehiculo instanceof modelo.Automovil) {

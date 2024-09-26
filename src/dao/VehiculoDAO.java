@@ -215,20 +215,46 @@ private Vehiculo crearVehiculoDesdeResultSet(ResultSet rs) throws SQLException {
     }
 
 // Método para eliminar un vehículo de la base de datos por su placa
-public boolean eliminarVehiculo(String placa) {
-    String sql = "DELETE FROM vehiculos WHERE placa = ?";
-    
-    try (Connection conn = ConexionDB.getConexion();
-         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+public boolean eliminarVehiculo(String placa, String tipoVehiculo) {
+    try {
+        // Eliminar primero de la tabla correspondiente
+        switch (tipoVehiculo.toLowerCase()) {
+            case "bus":
+                try (PreparedStatement pstmtBus = ConexionDB.getConexion().prepareStatement("DELETE FROM buses WHERE vehiculos_placa = ?")) {
+                    pstmtBus.setString(1, placa);
+                    pstmtBus.executeUpdate();
+                }
+                break;
+            case "automovil":
+                try (PreparedStatement pstmtAutomovil = ConexionDB.getConexion().prepareStatement("DELETE FROM automoviles WHERE vehiculos_placa = ?")) {
+                    pstmtAutomovil.setString(1, placa);
+                    pstmtAutomovil.executeUpdate();
+                }
+                break;
+            case "camion":
+                try (PreparedStatement pstmtCamion = ConexionDB.getConexion().prepareStatement("DELETE FROM camiones WHERE vehiculos_placa = ?")) {
+                    pstmtCamion.setString(1, placa);
+                    pstmtCamion.executeUpdate();
+                }
+                break;
+            case "moto":
+                try (PreparedStatement pstmtMoto = ConexionDB.getConexion().prepareStatement("DELETE FROM motos WHERE vehiculos_placa = ?")) {
+                    pstmtMoto.setString(1, placa);
+                    pstmtMoto.executeUpdate();
+                }
+                break;
+        }
 
-        pstmt.setString(1, placa);
-        int rowsDeleted = pstmt.executeUpdate();
-        return rowsDeleted > 0;
+        // Luego eliminar de la tabla vehiculos
+        try (PreparedStatement pstmt = ConexionDB.getConexion().prepareStatement("DELETE FROM vehiculos WHERE placa = ?")) {
+            pstmt.setString(1, placa);
+            int filasAfectadas = pstmt.executeUpdate();
+            return filasAfectadas > 0;
+        }
+
     } catch (SQLException e) {
         e.printStackTrace();
         return false;
-    } finally {
-        ConexionDB.cerrarConexion();
     }
 }
 
